@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 public class UserController {
     private final UserService userService;
 
@@ -20,7 +19,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/users/new")
+    @PostMapping("/new")
     public ResponseEntity create(UserRequestDto userRequestDto){
         User user = new User();
         user.setUserName(userRequestDto.getUserName());
@@ -34,7 +33,7 @@ public class UserController {
         }
         return ResponseEntity.ok().body(userService.findOne(user.getUserId()));
     }
-    @GetMapping("/users/find")
+    @GetMapping("/find")
     public ResponseEntity read(@RequestParam("userId") Integer userId){
         User findUser;
         try{
@@ -45,8 +44,8 @@ public class UserController {
         }
         return ResponseEntity.ok().body(findUser);
     }
-    @GetMapping("/users/update")
-    public ResponseEntity update(@RequestParam("userId") Integer userId, UserRequestDto userRequestDto){
+    @PostMapping("/update")
+    public ResponseEntity update(Integer userId, UserRequestDto userRequestDto){
         User findUser;
         User updateUser = new User();
         updateUser.setUserName(userRequestDto.getUserName());
@@ -60,8 +59,8 @@ public class UserController {
         }
         return ResponseEntity.ok().body(userService.updateOne(userId, updateUser));
     }
-    @GetMapping("/users/delete")
-    public ResponseEntity delete(@RequestParam("userId") Integer userId, UserRequestDto userRequestDto){
+    @PostMapping("/delete")
+    public ResponseEntity delete(Integer userId){
         User findUser;
         try{
             findUser = userService.findOne(userId);
